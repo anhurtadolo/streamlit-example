@@ -36,3 +36,14 @@ with st.echo(code_location='below'):
     st.altair_chart(alt.Chart(pd.DataFrame(data), height=500, width=500)
         .mark_circle(color='#0068c9', opacity=0.5)
         .encode(x='x:Q', y='y:Q'))
+
+@st.cache_data(ttl=600)
+def load_data(sheets_url):
+    csv_url = sheets_url.replace("/edit#gid=", "/export?format=csv&gid=")
+    return pd.read_csv(csv_url)
+
+df = load_data(st.secrets["public_gsheets_url"])
+
+# Print results.
+for row in df.itertuples():
+    st.write(f"{row.name} has a :{row.pet}:")
